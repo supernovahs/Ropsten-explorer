@@ -7,10 +7,10 @@ import { ethers } from "ethers"
 
 export default function Home() {
   const [Address, setAddress] = useState('');
-  const [balance, setbalance] = useState();
+  const [balance, setbalance] = useState(0);
   const [iscontract, setiscontract] = useState(null);
   const [nonce, setnonce] = useState(null);
-  const [blocknumber, setblocknumber] = useState(null);
+  const [blocknumber, setblocknumber] = useState(0);
   console.log("iscontract", iscontract);
   const providers = new ethers.providers.JsonRpcProvider("https://ropsten.infura.io/v3/d21c9a0af06049d980fc5df2d149e4bb");
   console.log("providers", providers);
@@ -26,12 +26,26 @@ export default function Home() {
 
     const non = await providers.getTransactionCount(address);
     setnonce(non);
-    const blocknum = await providers.getBlockNumber();
-    setblocknumber(blocknum);
+
 
 
 
   }
+
+
+  async function call() {
+    const blocknum = await providers.getBlockNumber();
+    setblocknumber(blocknum);
+  }
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const blocknum = await providers.getBlockNumber();
+      setblocknumber(blocknum);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [5000]);
 
 
   return (
@@ -46,6 +60,7 @@ export default function Home() {
         <h1 className={styles.title}>
           Ropsten Block Explorer
         </h1>
+        <h1 className={styles.blocknum}>BlockNumber: {blocknumber}</h1>
 
         <div className={styles.grid}>
           <input
@@ -72,7 +87,7 @@ export default function Home() {
           <h2>Balance: {(balance / 10 ** 18).toFixed(2)}  ETH</h2 >
           {<h2>Contract : {iscontract != null ? iscontract : ""}</h2>}
           <h2>Nonce: {nonce}</h2>
-          <h2>BlockNumber: {blocknumber}</h2>
+
         </div>
       </main>
 

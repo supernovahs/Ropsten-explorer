@@ -85,6 +85,10 @@
   max-width: 300px;
 }
 
+.blocknum{
+  color: red;
+}
+
 .card:hover,
 .card:focus,
 .card:active {
